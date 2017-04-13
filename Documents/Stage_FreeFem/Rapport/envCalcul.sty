@@ -1,0 +1,576 @@
+\ProvidesPackage{envCalcul}
+
+
+%% - Packages utilisés %%
+\RequirePackage{envLatex}
+\RequirePackage{amsthm}
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
+\RequirePackage{fancybox}
+\RequirePackage{geometry}
+\RequirePackage{pdfpages}
+\RequirePackage{enumerate}
+\RequirePackage{relsize}
+\RequirePackage{array}
+\RequirePackage{caption}
+\RequirePackage{varwidth}
+\RequirePackage{float}
+\RequirePackage{capt-of}
+
+
+%\renewcommand\PackageError[3]{[[[ERROR FOR PACKAGE #1]]]}
+
+
+%% ----- Commandes pour écrire des maths ------%%%%%%%
+
+
+\def\N{{\mathbb{N}}}
+\def\Z{{\mathbb{Z}}}
+\def\R{{\mathbb{R}}}
+\def\C{{\mathbb{C}}}
+
+\newcommand{\disp}{\displaystyle}
+\newcommand{\tr}{\mathrm{tr}} % trace
+\newcommand{\rg}{\mathrm{rg}} % rang
+\renewcommand{\ker}{\mathrm{Ker}} % noyau
+\newcommand{\ima}{\mathrm{Im}} % image
+\newcommand{\Id}{\mathrm{Id}} % image
+\newcommand{\diag}{\mathrm{Diag}} % matrice diagonale
+\renewcommand{\arccos}{\mathrm{Arccos}} % arccosinus
+\renewcommand{\arcsin}{\mathrm{Arcsin}} % arcsinus
+\renewcommand{\arctan}{\mathrm{Arctan}} % arctangente
+\newcommand{\ch}{\mathrm{ch}} % cosinus hyperbolique
+\newcommand{\sh}{\mathrm{sh}} % sinus hyperbolique
+\renewcommand{\tanh}{\mathrm{th}} % tangente hyperbolique
+\newcommand{\argch}{\mathrm{Argch}} % argument cosinus hyperbolique
+\newcommand{\argsh}{\mathrm{Argsh}} % argument sinus hyperbolique
+\newcommand{\argth}{\mathrm{Argth}} % argument tangente hyperbolique
+\newcommand{\cotan}{\mathrm{cotan}} % cotangente
+\newcommand{\car}{\mathrm{car}} % caractéristique
+\renewcommand{\P}{\mathrm{P}} % probabilité
+\newcommand{\V}{\mathrm{Var}} % variance
+\newcommand{\E}{\mathrm{E}} % espérance
+
+
+% -- Fractions 
+% La taille s'adapte automatiquement.
+
+\newcommand{\f}[2]{{\ensuremath{%
+	\mathchoice%
+	{\dfrac{#1}{#2}}
+    {\dfrac{#1}{#2}}
+	{\frac{#1}{#2}}
+	{\frac{#1}{#2}}
+}}}
+
+
+% équivalent
+
+\newcommand{\Sim}{\ensuremath{\mathop{\sim}\limits}}
+
+% -- Chapeau et tilde 
+
+\renewcommand{\hat}[1]{\ensuremath{\widehat{#1}}}
+\renewcommand{\tilde}[1]{\ensuremath{\widetilde{#1}}}
+
+% -- Plus ou moins l'infini (ajustement du symbole + ou -)
+
+\newcommand{\plus}{\mbox{\protect\raisebox{.2mm}{\scriptsize{\ensuremath{+}}}}}
+\newcommand{\moins}{\mbox{\protect\raisebox{.2mm}{\scriptsize{\ensuremath{-}}}}}
+\newcommand{\pinf}{\plus\ensuremath{\infty}}
+\newcommand{\minf}{\moins\ensuremath{\infty}}
+
+% -- Centrer une formule, aligner mot de liaison et formule centrée
+
+% Filet (définition nécessaire pour la suite...)
+
+\def\filet{\vskip\breakboxskip\relax
+\setbox\bk@bxb\vbox\bgroup
+\advance\linewidth -\fboxrule
+\advance\linewidth -\margesep
+\advance\linewidth -\intervalle
+\advance\linewidth -\fboxsep
+\hsize\linewidth\@parboxrestore
+\parindent\breakboxparindent\relax}
+
+% Environnement "remarque" utile pour Leftcentersright
+
+\newif\ifremarques
+
+\newenvironment{remarques}
+        {\remarquestrue\bigskip\noindent\begin{filet}}   % Voir plus bas.
+        {\end{filet}\bigskip\remarquesfalse}
+        
+% Fonctions \leftcentersright, \leftcenters, \centers, \centersright...
+
+\newcounter{Centers}
+\setcounter{Centers}{0}
+
+\newcommand{\CentersOnPage}{\setcounter{Centers}{0}}
+\newcommand{\CentersOnItems}{\setcounter{Centers}{1}}
+
+\newcommand{\leftcentersright}[4][2]{%
+	\ifthenelse{\equal{\value{Centers}}{0}}{%
+		\leftcentersrightonpage[#1]{#2}{#3}{#4}%
+	}{
+		\leftcentersrightonitems[#1]{#2}{#3}{#4}%		
+	}
+}
+
+\newcounter{vcenterstest}
+\newlength{\leftlength}
+\newlength{\rightlength}
+\newlength{\vcentersskip}
+\newcommand{\leftcentersrightonitems}[4][2]{%
+	\settowidth{\leftlength}{#2}%
+	\settowidth{\rightlength}{#4}%
+	\setcounter{vcenterstest}{#1}%
+	\ifthenelse{\value{vcenterstest} = 0}
+		{\setlength{\vcentersskip}{0pt}}{}%
+	\ifthenelse{\value{vcenterstest} = 1}
+		{\setlength{\vcentersskip}{\smallskipamount}}{}%
+	\ifthenelse{\value{vcenterstest} = 2}
+		{\setlength{\vcentersskip}{\medskipamount}}{}%
+	\ifthenelse{\value{vcenterstest} = 3}
+		{\setlength{\vcentersskip}{\bigskipamount}}{}%
+	\ifthenelse{\value{vcenterstest} = 4}
+		{\setlength{\vcentersskip}{1cm}}{}%
+		% On laisse un espace vertical défini par l'argument
+		% optionnel #1
+	\vskip\vcentersskip
+		% On place #2 et on recule de sa longueur
+	\noindent#2\hskip-\leftlength%
+		% On centre #3
+	\hfill#3\hfill%
+		% On va au bout de la ligne, on recule de la longueur de #4 et
+		% on place #4
+	\mbox{}\hskip-\rightlength#4%
+		% On laisse un espace vertical défini par l'argument
+		% optionnel #1
+	\vskip\vcentersskip%
+}
+
+%\newlength{\leftlength}
+%\newlength{\rightlength}
+\newlength{\calculskip}
+\newcommand{\calculvskip}[1]{% 
+  \ifthenelse{#1 = 0}{\setlength{\calculskip}{0pt}}{}%
+  \ifthenelse{#1 = 1}{\setlength{\calculskip}{\smallskipamount}}{}%
+  \ifthenelse{#1 = 2}{\setlength{\calculskip}{\medskipamount}}{}%
+  \ifthenelse{#1 = 3}{\setlength{\calculskip}{\bigskipamount}}{}%
+  \ifthenelse{#1 = 4}{\setlength{\calculskip}{1cm}}{}%
+  \vskip\calculskip
+} 
+
+\newcommand{\leftcentersrightonpage}[4][2]{%
+	\settowidth{\leftlength}{#2}%
+	\settowidth{\rightlength}{#4}%
+		% On laisse un espace vertical défini par l'argument
+		% optionnel #1
+	\calculvskip{#1}
+        % On place #2 et on recule de sa longueur
+		% Amélioration par Céline: la ligne suivante fait en sorte
+		% que l'argument du milieu soit toujours bien centré sur la
+		% page, plutôt que centré dans l'environnement (sauf
+		% dans une {remarque}, à la demande de Manu).
+	\noindent#2\hskip-\leftlength%
+%	\hskip\linewidth\hskip-\textwidth%
+	\ifremarques{}\else\hskip\linewidth\hskip-\textwidth\fi%
+		% On centre #3
+	\hfill{#3}\hfill
+		% On va au bout de la ligne, on recule de la longueur de #4 et
+		% on place #4
+	\mbox{}\hskip-\rightlength#4%
+		% On laisse un espace vertical défini par l'argument
+		% optionnel #1
+	\vskip\calculskip%
+}
+
+\newcommand{\centers}[2][2]{\leftcentersright[#1]{}{#2}{}}
+\newcommand{\leftcenters}[3][2]{\leftcentersright[#1]{#2}{#3}{}}
+\newcommand{\centersright}[3][2]{\leftcentersright[#1]{}{#2}{#3}}
+\newcommand{\leftencadreright}[4][2]{\leftcentersright[#1]{#2}{\fbox{#3}}{#4}}
+\newcommand{\encadre}[2][2]{\leftcentersright[#1]{}{\fbox{#2}}{}}
+\newcommand{\leftencadre}[3][2]{\leftcentersright[#1]{#2}{\fbox{#3}}{}}
+\newcommand{\encadreright}[3][2]{\leftcentersright[#1]{}{\fbox{#2}}{#3}}
+\newcommand{\remandcenters}[3][2]{\leftcentersright[#1]{#2}{#3}{}} % Synonyme
+\newcommand{\centrer}[2][2]{\leftcentersright[#1]{}{#2}{}}	% Synonyme
+\newcommand{\Centers}[2][2]{\leftcentersright[#1]{}{#2}{}}	% Synonyme
+
+% -- Symboles "inférieur ou égal", "supérieur ou égal"
+
+\renewcommand{\leq}{\ensuremath{\leqslant}}
+\renewcommand{\geq}{\ensuremath{\geqslant}}
+
+
+        
+
+% -- Intégrales
+% La taille s'adapte automatiquement.
+
+\newcommand{\Int}[2]{\ensuremath{\mathchoice%
+	{{\displaystyle\int_{#1}^{#2}}}
+	{{\displaystyle\int_{#1}^{#2}}}
+	{\int_{#1}^{#2}}
+	{\int_{#1}^{#2}}
+	}}
+	
+% -- Elements différentiels
+% Il faut laisser un peu de place entre l'intégrande et l'élément différentiel dt,dx... En plus, le d de l'élément différentiel est un d droit.
+
+%\newcommand{\dd}{\ensuremath{\mathrm{d}}}
+\newcommand{\dt}{\ensuremath{\:\dd t}}
+\newcommand{\dx}{\ensuremath{\:\dd x}}
+\newcommand{\dy}{\ensuremath{\:\dd y}}
+\newcommand{\dz}{\ensuremath{\:\dd z}}
+\newcommand{\du}{\ensuremath{\:\dd u}}
+%\newcommand{\dv}{\ensuremath{\:\dd v}}
+\newcommand{\dr}{\ensuremath{\:\dd r}}
+\newcommand{\dS}{\ensuremath{\,\dd\!\vect{S}}}		% Élément de surface
+\newcommand{\dl}{\ensuremath{\,\dd\!\vect{\ell}}}	% Élément de longueur
+\newcommand{\dT}{\ensuremath{\:\dd T}}			% Températures
+\newcommand{\dtheta}{\ensuremath{\:\dd \theta}}
+\newcommand{\dphi}{\ensuremath{\:\dd \varphi}}
+\newcommand{\dtau}{\ensuremath{\:\dd \tau}}
+\newcommand{\dV}{\ensuremath{\:\dd V}}
+
+% On écrira par exemple $\Int{0}{1} f(t) \dt$.
+
+% -- Sommes
+% La taille s'adapte automatiquement.
+
+\newcommand{\Sum}[2]{\ensuremath{\textstyle{\sum\limits_{#1}^{#2}}}}
+\newcommand{\serie}{\ensuremath{\smash{\Sum{}{}}}}
+
+\newcommand{\Sumt}[2]{\protect\Sumtproto{#1}{#2}}
+\newcommand{\Sumtproto}[2]{%
+        \ifthenelse{%
+                \equal{#1}{}
+        }{%
+                \ifthenelse{%
+                        \equal{#2}{}%
+                }{%
+                        \ensuremath{\sum}%
+                }{%
+                        \smash[b]{\ensuremath{\sum\limits_{#1}^{#2}}}%
+                }
+        }{%
+                \ensuremath{\sum\limits}_{#1}^{#2}%
+        }%
+}
+
+\newcommand{\SUM}[2]{\ensuremath{{\displaystyle\sum\limits_{#1}^{#2}}}}
+
+\newcommand{\SSUM}[3]
+{\ensuremath{{\displaystyle\sum\limits_{\begin{subarray}{c} #1 \\ #2 \end{subarray}}^{#3}}}}
+
+
+% -- Limites
+
+% Symbole limite
+
+\newcommand{\limite}{\ensuremath{\lim\limits}}
+
+% Tend vers
+
+\newcommand{\tv}[1]{\ensuremath{\xrightarrow[#1]{}}}
+\newcommand{\tvn}[1][n]{\ensuremath{\tv{#1 \to \infty}}}
+
+% -- Equations alignées
+
+% Définition nécessaire pour la suite
+
+\newsavebox{\boite}
+\def\debutcom{\begin{lrbox}{\boite}}
+\def\fincomg{\end{lrbox}\makebox[0cm][l]{\usebox{\boite}}%
+             \hskip\linewidth\hskip-\textwidth}
+\def\fincomd{\end{lrbox}\makebox[0cm][r]{\usebox{\boite}}}
+
+% Environnement 'egalites'
+
+\newenvironment{calculs:base}[2][2]{%
+	% On laisse un espace vertical défini par l'argument optionnel #1
+  	\calculvskip{#1}
+  	\noindent
+  	\begin{tabular*}{\linewidth}[t]%
+    		{@{}>{\debutcom}l<{\fincomg}@{\extracolsep{\fill}}%
+      		>{$}r<{$}%
+      		@{$\ #2\ $}%
+      		@{\extracolsep{0pt}}>{$}l<{$}%
+      		@{\extracolsep{\fill}}>{\debutcom}r<{\fincomd}@{}}
+	}{%
+  	\end{tabular*}%
+  	\vskip\calculskip
+}
+
+\newenvironment{egalites}[1][2]{%
+	\begin{calculs:base}[#1]{=}}{%
+	\end{calculs:base}
+}
+
+% Environnement 'inegalites'
+
+\newenvironment{inegalites}{%
+	\begin{inegalites:leq}}{%
+	\end{inegalites:leq}
+}
+
+\newenvironment{inegalites:leq}[1][2]{%
+	\begin{calculs:base}[#1]{\leq}}{%
+	\end{calculs:base}
+}
+
+\newenvironment{inegalites:geq}[1][2]{%
+	\begin{calculs:base}[#1]{\geq}}{%
+	\end{calculs:base}
+}
+
+% Environnement 'calculs'
+
+\newenvironment{calculs:rcl}[4][2]{%
+	% On laisse un espace vertical défini par l'argument
+        % optionnel #1
+	\calculvskip{#1}
+  	\noindent
+  	\begin{tabular*}{\linewidth}[t]%
+  		{@{}>{\debutcom}l<{\fincomg}@{\extracolsep{\fill}}
+		>{$}#2<{$}@{\extracolsep{0pt}}%
+		>{$\ }#3<{\ $}%
+      		@{\extracolsep{0pt}}>{$}#4<{$}%
+      		@{\extracolsep{\fill}}>{\debutcom}r<{\fincomd}@{}}%
+	}{%
+  	\end{tabular*}%
+  	\vskip\calculskip
+}
+
+\newenvironment{calculs}[1][2]%
+        {\begin{calculs:rcl}[#1]{r}{c}{l}}%
+        {\end{calculs:rcl}}
+        
+\newenvironment{calculs:rcl:extracol}[5][2]{%
+	\calculvskip{#1}
+ 	\noindent
+	\begin{tabular*}{\linewidth}[t]%
+                {@{}>{\debutcom}l<{\fincomg}@{\extracolsep{\fill}}%
+		>{$}#2<{$}@{\extracolsep{0pt}}%
+		>{$\ }#3<{\ $}@{\extracolsep{0pt}}%
+		>{$}#4<{$}@{\extracolsep{0pt}}%
+      		>{$\null}#5<{$}%
+      		@{\extracolsep{\fill}}>{\debutcom}r<{\fincomd}@{}}%
+}{%
+  	\end{tabular*}%
+  	\vskip\calculskip
+}
+
+% -- Travailler avec les nombres complexes :
+
+\renewcommand{\Re}{\ensuremath{\mathop{\text{Re}\,}\nolimits}}
+\renewcommand{\Im}{\ensuremath{\mathop{\text{Im}\,}\nolimits}}
+\newcommand{\Arg}[1]{\ensuremath{\mathrm{Arg}#1}}
+
+% -- Géométrie
+
+% Vecteurs
+
+\newlength{\moreinterligne}
+\setlength{\moreinterligne}{5.5 pt}
+\newlength{\letterarrowvskip}
+\setlength{\letterarrowvskip}{-1.5 pt}
+\newlength{\vectlength}
+\newlength{\vectheight}
+\newlength{\boxlength}
+\newcommand{\vect}[1]{%
+        \settowidth{\vectlength}{\ensuremath{#1}}%
+        \settoheight{\vectheight}{\ensuremath{#1}}%
+        \settowidth{\boxlength}{%
+	        \ensuremath{%
+        	\overrightarrow{%
+		        \parbox[b][\the\vectheight + \letterarrowvskip][b]{%
+				\the\vectlength%
+			}{\ensuremath{#1}}%
+		}%
+		}%
+        }
+        \parbox[b][\the\vectheight + \moreinterligne][b]{\the\boxlength}{%
+	        \ensuremath{%
+		        \overset{\hbox to \the\boxlength{\rightarrowfill}}{%
+	        	\parbox[b][\the\vectheight + \letterarrowvskip][b]{
+				\the\vectlength%
+			}{\ensuremath{#1}}%
+			}%
+		}%
+        }
+}
+
+\newlength{\smoreinterligne}
+\setlength{\smoreinterligne}{5.5 pt}
+\newlength{\sletterarrowvskip}
+\setlength{\sletterarrowvskip}{0 pt}
+\newlength{\svectlength}
+\newlength{\svectheight}
+\newlength{\sboxlength}
+\newlength{\sebtemp}
+\newcommand{\svect}[1]{% 
+        \settowidth{\svectlength}{\mbox{\scriptsize{\ensuremath{#1}}}}%
+        \settoheight{\svectheight}{\mbox{\scriptsize{\ensuremath{#1}}}}%
+        \settowidth{\sboxlength}{%
+	        \ensuremath{%
+	        \overrightarrow{%
+		        \parbox[b][\the\svectheight + \sletterarrowvskip][b]{%
+				\the\svectlength%
+			}%
+        		{\mbox{\scriptsize{\ensuremath{#1}}}}%
+		}%
+		}%
+        }
+	\parbox[b][\the\svectheight + \smoreinterligne][b]{\the\sboxlength}{%
+	        \ensuremath{%
+		\overrightarrow{%
+		        \parbox[b][\the\svectheight + \sletterarrowvskip][b]{%
+				\the\svectlength%
+			}%
+	        	{\mbox{\scriptsize{\ensuremath{#1}}}}%
+		}%
+		}%
+	}
+}
+
+\renewcommand{\vec}[1]{\ensuremath{\vect{#1}}}
+
+\newcommand{\uvect}[1]{\ensuremath{\underline{\vect{#1}}}}
+\newcommand{\vectu}[1]{\ensuremath{\vect{\underline{#1}}}}
+
+\newcommand{\oldvec}{\mathaccent"17E }
+
+% Produit vectoriel
+
+\newcommand{\vectoriel}{\ensuremath{\wedge}}
+
+
+% -- Produit scalaire
+
+\renewcommand{\|}{\ensuremath{\:|\:}} 
+\newcommand{\scalairep}[2]{\ensuremath{(#1\|#2)}}
+\newcommand{\scalairec}[2]{\ensuremath{\langle #1\|#2 \rangle}}
+
+% -- Normes
+
+\newcommand{\norme}[2][1]{%
+    \ifthenelse{#1 = 0}
+        {\ensuremath{#2}}{}%
+    \ifthenelse{#1 = 1}
+        {\ensuremath{\Arrowvert #2\Arrowvert}}{}%
+    \ifthenelse{#1 = 2}
+        {\ensuremath{\big\Arrowvert#2\big\Arrowvert}}{}%
+    \ifthenelse{#1 = 3}
+        {\ensuremath{\Big\Arrowvert#2\Big\Arrowvert}}{}%
+    \ifthenelse{#1 = 4}
+        {\ensuremath{\bigg\Arrowvert#2\bigg\Arrowvert}}{}%
+    \ifthenelse{#1 = 5}
+        {\ensuremath{\Bigg\Arrowvert#2\Bigg\Arrowvert}}{}%
+    \ifthenelse{#1 = 9}
+        {\ensuremath{\left\Arrowvert#2\right\Arrowvert}}{}%
+}
+
+
+\newcommand{\bignorme}[1]{\ensuremath{\left\Arrowvert #1 \right\Arrowvert}}
+\newcommand{\trinorme}[1]{\ensuremath{|\hskip -1 pt|\hskip -1 pt| #1%
+	|\hskip -1 pt|\hskip -1 pt|}}
+	
+% -- Matrices
+
+% Transposée
+
+\newcommand{\trans}[1]{\ensuremath{\sideset{^t}{}%
+        {\mathop{\mathstrut #1}}}}
+\newcommand{\transp}[1]{\trans{#1}}
+
+% Vecteur colonne
+
+\newcommand{\vcol}[1]{\ensuremath{\begin{pmatrix}#1\end{pmatrix}}}
+
+% -- Calcul diff
+
+% Dérivées droites
+
+\newcommand{\drond}{\ensuremath{\partial}}
+
+\newcommand{\ddf}[3][]{%
+        \ifthenelse{\equal{#1}{}}{%
+                \ensuremath{\f{\dd#2}{\dd#3}}%
+        }{%
+                \ensuremath{\f{\dd^{#1}#2}{\dd{#3}^{#1}}}%
+        }%
+}
+
+% Dérivées partielles
+
+\newcommand{\Dp}[3][]{
+        \ifthenelse{\equal{#1}{}}{%
+                \ensuremath{\f{\partial#2}{\partial#3}}%
+        }{%
+                \ensuremath{\f{\partial^{#1}#2}{\partial{#3}^{#1}}}%
+        }%
+}
+
+\newcommand{\Dpc}[3]{\ensuremath\f{\partial^2#1}{\partial#2\,\partial#3}}
+
+% Matrice jacobienne, matrice hessienne
+
+\newcommand{\DP}[3][]{\ensuremath{\left(\Dp[#1]{#2}{#3}\right)}}
+
+\newcommand{\DPC}[3]{\ensuremath{\left(\Dpc{#1}{#2}{#3}\right)}}
+
+% Quelques opérateurs
+
+\renewcommand{\div}[1]{\ensuremath{\mathop{\rm div \vect{#1} \,}\nolimits}}
+\newcommand{\rot}[1]{\ensuremath{\mathop{\vect{\rm rot} \vect{#1} \,}\nolimits}} 
+\newcommand{\grad}{\ensuremath{\mathop{\vect{\rm grad}\,}\nolimits}}
+
+% -- Systèmes d'équations
+
+\newenvironment{syst}[1][r]%
+	{\ensuremath{\left \{ \hskip -1.5 mm \begin{array}{#1@{\ =\ }l}}}%
+	{\end{array}\right.}
+
+\newenvironment{systsimple}[1][r]%
+	{\ensuremath{\begin{array}[t]{#1@{\ =\ }l}}}%
+	{\end{array}}
+
+\newenvironment{varsyst}[1][r]%
+	{\ensuremath{\left \{ \hskip -1.5 mm%
+	 \begin{array}{#1@{\ }c@{\ }l}}}%
+	{\end{array}\right.}
+
+\newenvironment{accolade}[1][r]%
+	{\ensuremath{\left \{ \hskip -1.5 mm \begin{array}{#1@{\quad}l}}}%
+	{\end{array}\right.}
+
+\newenvironment{leqsystsimple}[1][r]%
+	{\ensuremath{\begin{array}[t]{#1@{\ \leq\ }l}}}%
+	{\end{array}}
+
+\newenvironment{rcl}[1][r]%
+	{\ensuremath{\begin{array}[t]{#1@{\ }c@{\ }l}}}%
+	{\end{array}}
+	
+
+\newcommand{\intn}[2]{\ensuremath{[\![ \, #1 \,,\, #2 \,]\!]}}
+\newcommand{\intnn}[2]{\intn{#1}{#2}}				% Synonyme
+
+
+
+% -- Modification des espacements
+
+\newcommand{\s}{\vspace{\baselineskip}}
+
+
+%%%%%%%%%%% --- Mécanique Quantique --- %%%%%%%%%%%
+
+\newcommand{\ket}[1]{\ensuremath{|#1\rangle}\xspace}
+\newcommand{\bra}[1]{\ensuremath{\langle #1|}\xspace}
+\newcommand{\elemm}[3]{\ensuremath{\bra{#1}#2\ket{#3}}\xspace}
+
+
+\endinput
+

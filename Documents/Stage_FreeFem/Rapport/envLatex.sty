@@ -1,0 +1,117 @@
+% Informations générales
+\ProvidesPackage{envLatex}
+
+
+
+%% ------------------------------------------- %%
+%% Chargement des extensions
+%% ------------------------------------------- %%
+
+
+% Extensions principale - langue et format 
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[T1]{fontenc}
+%\RequirePackage[francais]{babel}
+
+
+% Pour modifier la mise en forme du document
+\RequirePackage{geometry}
+
+
+% Pour les figures, images et tableaux longs
+\RequirePackage{graphicx, wrapfig}
+\RequirePackage{multirow}
+\RequirePackage{array}
+\RequirePackage{longtable}
+\RequirePackage{float}
+\RequirePackage[hang,footnotesize]{caption}
+\RequirePackage{multicol}
+
+
+% Pour les mathématiques
+\RequirePackage{mathrsfs}                     % Pour des symboles
+\RequirePackage{amsmath, amssymb}             % Pour les expressions.
+\RequirePackage{amsbsy}
+\RequirePackage{xfrac}                        % Pour des fractions de taille réduite
+\RequirePackage{cases}                        % For system of equation
+\RequirePackage{stmaryrd}                     % For brackets
+
+
+% Pour la mise en forme du texte
+\RequirePackage{textcomp}         % Package pour les symboles particuliers
+\RequirePackage{marvosym}         % Package pour le symbole euro
+\RequirePackage{xcolor}           % Package pour la couleur
+\RequirePackage{soul}             % Package pour souligner les mots
+\RequirePackage{hyperref}         % Pour les liens et références
+\RequirePackage{indentfirst}      % Pour indenter le texte au début 
+
+
+% Commande pour mettre le texte lipsum
+\RequirePackage{lipsum}
+
+
+
+
+% Commande pour introduire du code
+\RequirePackage{algorithm}
+\RequirePackage{algpseudocode}
+\RequirePackage{listings}
+\lstset{
+basicstyle=\ttfamily\small, %
+identifierstyle=\color{red}, %
+keywordstyle=\color{blue}, %
+stringstyle=\color{black!90}, %
+commentstyle=\it\color{gray}, %
+columns=flexible, %
+tabsize=2, %
+extendedchars=true, %
+showspaces=false, %
+showstringspaces=false, %
+numbers=left, %
+numberstyle=\tiny, %
+breaklines=true, %
+breakautoindent=true, %
+captionpos=b
+}
+
+
+% %% - Redéfinition des marges du document %%
+% \RequirePackage{geometry}
+\geometry{
+  a4paper,
+  pdftex,
+  left=2truecm,
+  right=2truecm,
+  top=2truecm,
+  textwidth=15.0truecm,
+  textheight=25cm,
+  hmarginratio=1:1,
+  twoside
+}
+
+% Commande pour personnaliser tableau
+\newcolumntype{M}[1]{>{\raggedright}m{#1}}
+
+% Commande pour les légendes de figures
+\captionsetup{format=plain}
+
+
+% Pour la coupure des mots avec tiret
+\newcommand\hyph{\nobreak\hskip0pt-\nobreak\hskip0pt\relax}
+
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=cyan,  % Couleur des liens internes
+    citecolor=cyan,  % Couleur des numéros de la biblio dans le corps
+    urlcolor=cyan  } % Couleur des url
+
+%label pour citer les figures dans le texte
+\newcommand{\figrefcf}[1]{(\textcolor{blue}{\textit{cf figure~\ref{#1}}})} 
+\newcommand{\figref}[1]{\textcolor{blue}{\textit{figure~\ref{#1}}}}
+\newcommand{\tabref}[1]{(\textcolor{blue}{\textit{cf tableau~\ref{#1}}})}
+
+
+%% Fin du package
+\endinput
+

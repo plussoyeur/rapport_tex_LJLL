@@ -1,0 +1,33 @@
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Post-processing of BEC simulations using FreeFem++}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This work was performed in 2D : thus we are looking at a $3D$ surface defined by $\transp{\vcol{x,y,\rho(x,y)}}$. \s
+
+\subsection{How to retrieve the vortices from a simulation}
+
+This analysis suggested here relies on a module available in \textit{isoline.cpp} which is called \textit{findalllocalmin}. It allows to find all basins of attraction for a certain surface: for each vortex, it gives the elements of the mesh that defines it.  
+
+An issue comes from the simulation in itself: as the algorithm extracts all local minima, some artefacts exist due some small disruptions of the surface. A way to get around the problem is to use the quantification of the vortices. Indeed solution to GPE contains vortices with a charge $\pm 1$ (charge larger than or equal to 2 are thermodynamically unstable). Now the n-charge is defined as :
+
+\begin{align*}
+\Gamma & =  \oint \vv dl  = n \f{h}{m} \\
+\tilde{\Gamma} & = \oint \nablav S dl = 2 \pi n
+\end{align*}
+
+
+\begin{egalites}
+with & \psi(t,\rv) &  \sqrt{\rho(t,\rv)} e^{i S(t,\rv)} & the wave function,\\
+and & \vv & \f{\hbar}{m} \nablav S & where m is the mass of the particules.\\
+\end{egalites}
+
+A way to analyse if a basin of attraction contains a vortex is to compute this integral and to store only the basin the integral of which equals to $\pm 2 \pi$. In Freefem++, this is how it is written : 
+
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+		\State ${\displaystyle \int_{1D}^{} }$
+
+	\end{algorithmic}
+\end{algorithm}
+
+

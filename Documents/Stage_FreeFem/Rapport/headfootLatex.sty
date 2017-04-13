@@ -1,0 +1,23 @@
+%% Informations générales
+\ProvidesPackage{headfootLatex}
+
+
+
+%% Calling the packages 
+\RequirePackage{fancyhdr} \pagestyle{fancy}
+\RequirePackage{lastpage}
+
+%% Changing the head and foot
+\cfoot{ \thepage{} }
+\rhead{ Master 2 AMS }
+\lhead{ Working document }
+\lfoot{ \textsc{Laboratoire Jacques-Louis Lions} }
+\rfoot{ \textsc{ENS Paris-Saclay} }
+
+%% Line modification
+\renewcommand\headrulewidth{0.10pt}
+\renewcommand\footrulewidth{0.10pt}
+
+
+%% Fin du package
+\endinput
